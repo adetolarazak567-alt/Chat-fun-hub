@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Preview — ChatFun Hub</title>
+<style>
+  :root{--card:#0b1220;--muted:#94a3b8;--accent:#ff6b00}
+  *{box-sizing:border-box} html,body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#071021,#07172a);color:#e6eef8}
+  .site{max-width:900px;margin:18px auto;padding:14px}
+  .preview{height:260px;border-radius:10px;overflow:hidden;background:#061420;display:flex;align-items:center;justify-content:center}
+  .btn{padding:10px;border-radius:8px;border:none;background:var(--accent);color:#071028;font-weight:700}
+  .u-small{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="site">
+    <a href="index.html" style="color:inherit">← Back</a>
+    <div id="box" style="margin-top:12px;background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)">
+      <h2 id="title">Loading…</h2>
+      <div id="desc" class="u-small"></div>
+      <div class="preview" id="media" style="margin-top:12px"></div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button id="downloadBtn" class="btn">Download</button>
+        <button id="shareBtn" class="btn" style="background:rgba(255,255,255,0.06);color:inherit">Share on WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // load pack by ?id=...
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  let packs = JSON.parse(localStorage.getItem('packs_v1')) || [];
+  const seed = [
+    {id:'p1',cat:'stickers',title:'Nollywood Meme Pack',desc:'30 reaction stickers',files:['https://placekitten.com/400/300']},
+    {id:'p2',cat:'stickers',title:'Pidgin Slangs Pack',desc:'Pidgin stickers',files:['https://placekitten.com/410/300']},
+    {id:'p3',cat:'ringtones',title:'Afrobeats Short Clips',desc:'Ringtones',files:['https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3']},
+    {id:'p4',cat:'templates',title:'Birthday Flyer Pack',desc:'Templates',files:['https://via.placeholder.com/800x1200.png?text=Birthday+Template']},
+    {id:'p5',cat:'status',title:'Short Vibes Clips',desc:'Status clips',files:['https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm']}
+  ];
+  packs = packs.length ? packs : seed;
+
+  const pack = packs.find(p=>p.id===id) || packs[0];
+  document.getElementById('title').textContent = pack.title;
+  document.getElementById('desc').textContent = pack.desc;
+
+  const media = document.getElementById('media');
+  if(pack.cat==='ringtones'){ const a=document.createElement('audio'); a.controls=true; a.src=pack.files[0]; a.style.width='100%'; media.appendChild(a); }
+  else if(pack.cat==='status' || pack.cat==='templates'){ const v=document.createElement('video'); v.controls=true; v.src=pack.files[0]; v.style.width='100%'; media.appendChild(v); }
+  else { const i=document.createElement('img'); i.src=pack.files[0]; i.alt=pack.title; media.appendChild(i); }
+
+  document.getElementById('downloadBtn').addEventListener('click', ()=>{
+    const a=document.createElement('a'); a.href=pack.files[0]; a.download=pack.title; a.target='_blank'; document.body.appendChild(a); a.click(); a.remove();
+  });
+  document.getElementById('shareBtn').addEventListener('click', ()=>{
+    const shareUrl = location.href;
+    const wa = `https://wa.me/?text=${encodeURIComponent(pack.title + ' - ' + shareUrl)}`;
+    window.open(wa,'_blank');
+  });
+</script>
+</body>
+</html>
