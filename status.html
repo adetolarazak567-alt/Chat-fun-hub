@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ChatFun Hub — Status Videos</title>
+  <style>
+    :root{--bg:#071021;--card:#0b1220;--muted:#94a3b8;--accent:#ff6b00;--glass:rgba(255,255,255,0.04)}
+    *{box-sizing:border-box} html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#071021,#07172a);color:#e6eef8}
+    a{color:inherit;text-decoration:none} img{max-width:100%;display:block} button{font:inherit;cursor:pointer}
+    .site{max-width:980px;margin:18px auto;padding:14px}
+    header{display:flex;align-items:center;gap:12px}
+    .logo{display:flex;align-items:center;gap:10px}
+    .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ff9a3c);display:grid;place-items:center;font-weight:700;color:#071028}
+    .brand{font-size:18px;font-weight:700}
+    .nav{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+    .nav a{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);color:var(--muted);font-weight:600}
+    .packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+    .pack{background:var(--card);padding:10px;border-radius:10px;border:1px solid var(--glass)}
+    .preview{height:160px;border-radius:8px;overflow:hidden;background:#061420;display:flex;align-items:center;justify-content:center}
+    video{max-width:100%;max-height:100%}
+    .btn-row{display:flex;gap:8px}
+    .btn{flex:1;padding:8px 10px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:inherit;font-weight:700}
+    .btn.primary{background:var(--accent);color:#071028}
+    footer{margin-top:18px;padding:12px;color:var(--muted);font-size:13px;text-align:center}
+    .u-small{font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header>
+      <div class="logo">
+        <div class="mark">CF</div>
+        <div>
+          <div class="brand">ChatFun Hub</div>
+          <div class="u-small">WhatsApp Status Videos</div>
+        </div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <a class="u-small" href="index.html"><button class="btn">🏠 Home</button></a>
+      </div>
+    </header>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="stickers.html">Stickers</a>
+      <a href="ringtones.html">Ringtones</a>
+      <a href="templates.html">Templates</a>
+      <a href="status.html">Status</a>
+      <a href="upload.html">Upload</a>
+    </nav>
+
+    <main>
+      <h2>Status Video Packs</h2>
+      <p class="u-small">Trending WhatsApp status videos — Afrobeats, comedy clips, love vibes.</p>
+      <div class="packs" id="packsGrid"></div>
+    </main>
+
+    <footer>
+      Built with ❤️ for WhatsApp users • <span id="year"></span>
+    </footer>
+  </div>
+
+<script>
+async function loadPacks(){
+  const grid = document.getElementById('packsGrid');
+  grid.innerHTML = "<p>Loading...</p>";
+
+  try {
+    const res = await fetch("/api/packs");
+    const allPacks = await res.json();
+    const packs = allPacks.filter(p => p.cat === "status");
+
+    grid.innerHTML = "";
+    packs.forEach(p=>{
+      const card = document.createElement("div");
+      card.className = "pack";
+      card.innerHTML = `
+        <div class="preview">
+          ${p.thumb.startsWith("/uploads/") ? `<img src="${p.thumb}" alt="">` : p.thumb}
+        </div>
+        <h4>${p.title}</h4>
+        <p class="u-small">${p.desc}</p>
+        <div class="btn-row">
+          <a class="btn primary" href="/api/download/${p.id}">Download</a>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    if(packs.length === 0){
+      grid.innerHTML = "<p>No statuses uploaded yet.</p>";
+    }
+  } catch(err){
+    grid.innerHTML = "<p>Error loading statuses.</p>";
+    console.error(err);
+  }
+}
+
+loadPacks();
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
