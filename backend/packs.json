@@ -1,0 +1,22 @@
+[
+  {
+    "id": "p1",
+    "cat": "stickers",
+    "title": "Nollywood Meme Pack",
+    "desc": "30 reaction stickers from Nollywood scenes.",
+    "thumb": "static/thumbs/nollywood.png",
+    "files": ["static/example/nollywood.zip"],
+    "size": "1.2 MB",
+    "downloads": 120
+  },
+  {
+    "id": "p2",
+    "cat": "ringtones",
+    "title": "Afrobeats Short Clips",
+    "desc": "10 short royalty-free beats for ringtones.",
+    "thumb": "static/thumbs/afrobeats.png",
+    "files": ["static/example/afrobeats.mp3"],
+    "size": "3.4 MB",
+    "downloads": 340
+  }
+]
