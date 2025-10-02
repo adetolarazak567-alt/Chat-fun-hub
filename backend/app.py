@@ -4,6 +4,7 @@ import time
 import uuid
 from pathlib import Path
 from flask import Flask, request, send_file, jsonify, redirect, abort
+from flask_cors import CORS   # NEW
 
 # ---- Config ----
 PORT = int(os.getenv("PORT", 5000))
@@ -17,6 +18,14 @@ DL_FILE = BASE_DIR / "dl_counts.json"
 
 # Create dirs
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+# ---- Flask app ----
+app = Flask(
+    __name__,
+    static_folder=str(FRONTEND_DIR),
+    static_url_path="/"
+)
+CORS(app)  # ✅ Allow all origins (frontend can call APIs)
 
 # ---- Helpers ----
 def load_packs():
@@ -37,13 +46,6 @@ def find_pack(pack_id):
         if p["id"] == pack_id:
             return p
     return None
-
-# ---- Flask app ----
-app = Flask(
-    __name__,
-    static_folder=str(FRONTEND_DIR),
-    static_url_path="/"
-)
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
